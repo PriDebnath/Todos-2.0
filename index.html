@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="Author" content="Pritam Debnath">
+  <meta name="linkedin profile" content="https://www.linkedin.com/in/pritam-debnath-762019239">
+
+
+  <title>Todos 2.0</title>
+  <style type="text/css" media="all">
+    * {
+      box-sizing: border-box;
+      transition: 0.7s;
+    }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 4rem;
+      opacity: 0.7;
+      font-family: cursive;
+      color: rebeccapurple;
+    }
+
+    form {
+      width: 300px;
+      margin: auto;
+      height: 60%;
+    }
+
+    #input {
+      border-radius: 5rem;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      width: 100%;
+      display: block;
+      font-size: 1.2rem;
+      border: 2px solid transparent;
+      box-shadow: 0 0 10px rebeccapurple;
+
+    }
+
+    .input-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    #input:focus {
+      border: 1px solid rebeccapurple;
+      outline: none;
+    }
+
+    #input::placeholder {
+      color: #b5b5b5;
+    }
+
+    ul {
+      padding: 0 0;
+      display: flex;
+      flex-direction: column-reverse;
+      list-style: none;
+    }
+
+    li {
+      margin: 3% 0;
+      padding: 5% 7%;
+      color: whitesmoke;
+      background: linear-gradient(to right, rebeccapurple, purple);
+      font-size: 1rem;
+      border-radius: 40px 0 40px 0%;
+      position: relative;
+      box-shadow: 0 10px 10px rebeccapurple;
+
+    }
+
+    small {
+      position: fixed;
+      top: 95vh;
+      left: 70vw;
+
+    }
+
+    .complete {
+      text-decoration: line-through;
+      color: gray;
+    }
+
+    #btn {
+      font-size: 2rem;
+      position: absolute;
+      display: block;
+      right: 2%;
+      border-radius: 5rem;
+      background: rebeccapurple;
+      border: none;
+      width: 2.5rem;
+      outline: none;
+      color: white;
+    }
+
+    #btn:hover {
+      color: lime;
+    }
+  </style>
+</head>
+
+<body>
+  <!--html-->
+
+  <h2>Todos 2.0</h2>
+  <form id="form" accept-charset="utf-8">
+    <div class="input-container">
+      <input id="input" placeholder="Enter your todos" />
+      <button type="submit" id="btn" title="add item">+</button>
+    </div>
+
+    <ul id="todos" title="Double tab to ❌delete">
+    </ul>
+  </form>
+
+  <!-- logic -->
+
+  <script>
+    let form = document.getElementById('form');
+    let input = document.getElementById('input');
+    let todos = document.getElementById('todos')
+    let btn = document.getElementById('btn')
+    btn.addEventListener('click', () => addTodo())
+
+
+
+    //getting todos from localStorage
+
+    let allTodos = JSON.parse(localStorage.getItem('allText'))
+
+
+    if (allTodos) {
+      allTodos.forEach((todo) => {
+        addTodo(todo)
+      })
+    }
+
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      addTodo();
+    })
+
+
+    function addTodo(todo) {
+
+      //add the text in li
+      let todoText = input.value;
+
+      if (todo) {
+        todoText = todo.text
+      }
+
+
+
+      if (todoText) {
+        let todoLi = document.createElement('li')
+
+        if (todo) {
+          todoLi.innerText = todo.text
+        }
+
+
+        todoLi.innerText = todoText;
+
+
+        todos.appendChild(todoLi)
+        input.value = '';
+
+
+        //adding delete option
+        todoLi.addEventListener('dblclick', () => {
+          todoLi.remove()
+          updateLocalStore()
+
+        })
+        //adding complete option
+        todoLi.addEventListener('click', () => {
+          todoLi.classList.toggle('complete')
+          updateLocalStore()
+        })
+        updateLocalStore()
+      }
+    }
+
+    function updateLocalStore() {
+      let noteLis = document.querySelectorAll('li')
+
+      let notes = []
+
+      noteLis.forEach((note) => {
+        notes.push({
+          text: note.innerText
+        })
+      })
+
+      localStorage.setItem('allText', JSON.stringify(notes))
+    }
+
+    //
+  </script>
+</body>
+
+</html>
